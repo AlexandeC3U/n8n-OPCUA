@@ -1,0 +1,48 @@
+# Git
+.git
+.gitignore
+
+# Node modules (will be installed in container)
+node_modules
+opcua-server/node_modules
+
+# Environment files
+.env.local
+.env.production
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Documentation
+*.md
+!README.md
+
+# Docker
+docker-compose*.yml
+Dockerfile
+.dockerignore
+
+# Backup
+backups/
+*.tar.gz
+
+# Scripts
+*.ps1
+*.bat
+Makefile
+
+# Example files
+*.example
+example-*
+

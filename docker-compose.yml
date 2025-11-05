@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  n8n:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: n8n-opcua
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_HOST=${N8N_HOST:-localhost}
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=${N8N_PROTOCOL:-http}
+      - NODE_ENV=production
+      - WEBHOOK_URL=${WEBHOOK_URL:-http://localhost:5678/}
+      - GENERIC_TIMEZONE=${TIMEZONE:-UTC}
+      - N8N_DIAGNOSTICS_ENABLED=false
+      - N8N_PERSONALIZATION_ENABLED=false
+      - N8N_HIRING_BANNER_ENABLED=false
+      # Database configuration (SQLite by default)
+      - DB_TYPE=sqlite
+      - DB_SQLITE_VACUUM_ON_STARTUP=true
+      # Security
+      - N8N_BASIC_AUTH_ACTIVE=${N8N_BASIC_AUTH_ACTIVE:-false}
+      - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER:-}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD:-}
+    volumes:
+      # Persist n8n data
+      - n8n_data:/home/node/.n8n
+      # Optional: Mount local files for development
+      # - ./n8n-local-files:/files
+    networks:
+      - n8n-network
+    depends_on:
+      opcua-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:5678/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  opcua-server:
+    image: node:20-alpine
+    container_name: opcua-simulation-server
+    restart: unless-stopped
+    ports:
+      - "4840:4840"
+    working_dir: /app
+    command: node server.js
+    volumes:
+      - ./opcua-server:/app
+    networks:
+      - n8n-network
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "4840"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+networks:
+  n8n-network:
+    driver: bridge
+    name: n8n-opcua-network
+
+volumes:
+  n8n_data:
+    name: n8n_opcua_data
+    driver: local
+

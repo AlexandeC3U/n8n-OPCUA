@@ -1,0 +1,16 @@
+{
+  "name": "opcua-simulation-server",
+  "version": "1.0.0",
+  "description": "OPC UA Simulation Server for n8n testing",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "node-opcua": "^2.119.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
+

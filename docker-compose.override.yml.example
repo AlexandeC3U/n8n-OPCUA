@@ -1,0 +1,71 @@
+# Docker Compose Override Example
+# Copy this file to docker-compose.override.yml to customize your setup
+# docker-compose.override.yml is automatically loaded if it exists
+
+version: '3.8'
+
+services:
+  n8n:
+    # Uncomment to use a different port
+    # ports:
+    #   - "5679:5678"
+    
+    # Uncomment to mount local files
+    # volumes:
+    #   - ./n8n-local-files:/files
+    #   - ./custom-nodes:/home/node/.n8n/custom
+    
+    # Uncomment for development with hot reload
+    # environment:
+    #   - NODE_ENV=development
+    #   - N8N_LOG_LEVEL=debug
+    
+  opcua-server:
+    # Uncomment to use a different port
+    # ports:
+    #   - "4841:4840"
+    
+    # Uncomment to mount custom server script
+    # volumes:
+    #   - ./opcua-server/custom-server.js:/app/server.js
+
+  # Uncomment to add PostgreSQL database
+  # postgres:
+  #   image: postgres:15-alpine
+  #   container_name: n8n-postgres
+  #   restart: unless-stopped
+  #   environment:
+  #     - POSTGRES_USER=n8n
+  #     - POSTGRES_PASSWORD=changeme
+  #     - POSTGRES_DB=n8n
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   networks:
+  #     - n8n-network
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U n8n"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+
+  # Uncomment to add Redis for queue mode
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: n8n-redis
+  #   restart: unless-stopped
+  #   volumes:
+  #     - redis_data:/data
+  #   networks:
+  #     - n8n-network
+  #   healthcheck:
+  #     test: ["CMD", "redis-cli", "ping"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+
+# volumes:
+#   postgres_data:
+#     name: n8n_postgres_data
+#   redis_data:
+#     name: n8n_redis_data
+
