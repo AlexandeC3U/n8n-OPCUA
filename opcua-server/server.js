@@ -12,6 +12,8 @@ async function main() {
     const server = new OPCUAServer({
         port: 4840,
         resourcePath: "/UA/SimulationServer",
+        hostname: "opcua-server", // Use the Docker service name
+        alternateHostname: ["localhost", "127.0.0.1", "opcua-simulation-server"],
         buildInfo: {
             productName: "n8n OPC UA Simulation Server",
             buildNumber: "1.0.0",
@@ -41,6 +43,7 @@ async function main() {
     let temperature = 20.0;
     const temperatureVariable = namespace.addVariable({
         componentOf: simulationFolder,
+        nodeId: "s=Simulation.Temperature",
         browseName: "Temperature",
         displayName: "Temperature Sensor",
         description: "Simulated temperature in Celsius",
@@ -61,6 +64,7 @@ async function main() {
     let pressure = 101.325;
     const pressureVariable = namespace.addVariable({
         componentOf: simulationFolder,
+        nodeId: "s=Simulation.Pressure",
         browseName: "Pressure",
         displayName: "Pressure Sensor",
         description: "Simulated pressure in kPa",
@@ -80,6 +84,7 @@ async function main() {
     let counter = 0;
     const counterVariable = namespace.addVariable({
         componentOf: simulationFolder,
+        nodeId: "s=Simulation.Counter",
         browseName: "Counter",
         displayName: "Counter",
         description: "Incrementing counter",
@@ -99,6 +104,7 @@ async function main() {
     let pumpStatus = false;
     const pumpVariable = namespace.addVariable({
         componentOf: simulationFolder,
+        nodeId: "s=Simulation.PumpStatus",
         browseName: "PumpStatus",
         displayName: "Pump Status",
         description: "Pump on/off status (writable)",
@@ -124,6 +130,7 @@ async function main() {
     let setpoint = 25.0;
     const setpointVariable = namespace.addVariable({
         componentOf: simulationFolder,
+        nodeId: "s=Simulation.TemperatureSetpoint",
         browseName: "TemperatureSetpoint",
         displayName: "Temperature Setpoint",
         description: "Temperature setpoint (writable)",
@@ -150,6 +157,7 @@ async function main() {
     let machineStateIndex = 0;
     const machineStateVariable = namespace.addVariable({
         componentOf: simulationFolder,
+        nodeId: "s=Simulation.MachineState",
         browseName: "MachineState",
         displayName: "Machine State",
         description: "Current machine state",
@@ -170,6 +178,7 @@ async function main() {
     let productionCount = 0;
     const productionVariable = namespace.addVariable({
         componentOf: simulationFolder,
+        nodeId: "s=Simulation.ProductionCount",
         browseName: "ProductionCount",
         displayName: "Production Counter",
         description: "Total items produced",

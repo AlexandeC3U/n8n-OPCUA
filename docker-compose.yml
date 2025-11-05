@@ -1,12 +1,9 @@
-version: '3.8'
-
 services:
   n8n:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: n8nio/n8n:latest
     container_name: n8n-opcua
     restart: unless-stopped
+    user: root
     ports:
       - "5678:5678"
     environment:
@@ -26,6 +23,8 @@ services:
       - N8N_BASIC_AUTH_ACTIVE=${N8N_BASIC_AUTH_ACTIVE:-false}
       - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER:-}
       - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD:-}
+      # Enable community nodes
+      - N8N_COMMUNITY_PACKAGES_ENABLED=true
     volumes:
       # Persist n8n data
       - n8n_data:/home/node/.n8n
@@ -34,8 +33,7 @@ services:
     networks:
       - n8n-network
     depends_on:
-      opcua-server:
-        condition: service_healthy
+      - opcua-server
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "http://localhost:5678/healthz"]
       interval: 30s
@@ -50,17 +48,17 @@ services:
     ports:
       - "4840:4840"
     working_dir: /app
-    command: node server.js
+    command: sh -c "npm install && node server.js"
     volumes:
       - ./opcua-server:/app
     networks:
       - n8n-network
     healthcheck:
-      test: ["CMD", "nc", "-z", "localhost", "4840"]
+      test: ["CMD", "node", "--version"]
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 10s
+      start_period: 20s
 
 networks:
   n8n-network:
